@@ -6,6 +6,9 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # 👈 ensures GITHUB_TOKEN can push
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -13,15 +16,19 @@ jobs:
       - name: Set date
         run: echo "TODAY=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
 
-      - name: Append today's date to update.txt
+      - name: Write today's date to update.txt
         run: |
           mkdir -p logs
-          echo "${{ env.TODAY }}" >> logs/update.txt
+          echo "${{ env.TODAY }}" > logs/update.txt
 
       - name: Commit and push
         uses: EndBug/add-and-commit@v9
         with:
           add: 'logs/update.txt'
           message: "chore: manual update ${{ env.TODAY }}"
-          author_name: "Shreya"
-          author_email: "79crypto@gmail.com"
+          author_name: "Hemant"
+          # 👇 Use your GitHub-provided noreply email (replace USERNAME + ID)
+          # Format: username@users.noreply.github.com
+          author_email: "155320699+77f4@users.noreply.github.com"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
