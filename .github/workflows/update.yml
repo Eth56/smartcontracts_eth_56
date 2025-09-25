@@ -1,0 +1,27 @@
+name: Manual update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set date
+        run: echo "TODAY=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Append today's date to update.txt
+        run: |
+          mkdir -p logs
+          echo "${{ env.TODAY }}" >> logs/update.txt
+
+      - name: Commit and push
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'logs/update.txt'
+          message: "chore: manual update ${{ env.TODAY }}"
+          author_name: "Shreya"
+          author_email: "79crypto@gmail.com"
